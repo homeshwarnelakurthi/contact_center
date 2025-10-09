@@ -65,7 +65,7 @@
       "parameters": [
         {
           "name": "HoursOfOperationId",
-          "value": "arn:aws:connect:us-east-1:123456789012:instance/12345678-1234-1234-1234-123456789012/operating-hours/12345678-1234-1234-1234-123456789012",
+          "value": "",
           "resourceName": "Basic Hours"
         }
       ],
