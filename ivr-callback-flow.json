@@ -1,0 +1,477 @@
+{
+  "modules": [
+    {
+      "id": "12345678-1234-1234-1234-123456789000",
+      "type": "SetLoggingBehavior",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789001"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "LoggingBehavior",
+          "value": "Enable"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 67,
+          "y": 52
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789001",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789002"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "Thank you for calling our company. Please hold while we direct your call.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 67,
+          "y": 199
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789002",
+      "type": "CheckHoursOfOperation",
+      "branches": [
+        {
+          "condition": "CheckHoursOfOperation",
+          "transition": "12345678-1234-1234-1234-123456789003"
+        },
+        {
+          "condition": "OutOfHours",
+          "transition": "12345678-1234-1234-1234-123456789008"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "HoursOfOperationId",
+          "value": "arn:aws:connect:us-east-1:123456789012:instance/12345678-1234-1234-1234-123456789012/operating-hours/12345678-1234-1234-1234-123456789012",
+          "resourceName": "Basic Hours"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 67,
+          "y": 346
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789003",
+      "type": "CheckStaffing",
+      "branches": [
+        {
+          "condition": "Available",
+          "transition": "12345678-1234-1234-1234-123456789004"
+        },
+        {
+          "condition": "Staffed",
+          "transition": "12345678-1234-1234-1234-123456789005"
+        },
+        {
+          "condition": "Error",
+          "transition": "12345678-1234-1234-1234-123456789004"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "QueueId",
+          "value": "arn:aws:connect:us-east-1:123456789012:instance/12345678-1234-1234-1234-123456789012/queue/12345678-1234-1234-1234-123456789012",
+          "resourceName": "BasicQueue"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 67,
+          "y": 493
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789004",
+      "type": "TransferToQueue",
+      "branches": [
+        {
+          "condition": "AtCapacity",
+          "transition": "12345678-1234-1234-1234-123456789013"
+        },
+        {
+          "condition": "Error",
+          "transition": "12345678-1234-1234-1234-123456789013"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "QueueId",
+          "value": "arn:aws:connect:us-east-1:123456789012:instance/12345678-1234-1234-1234-123456789012/queue/12345678-1234-1234-1234-123456789012",
+          "resourceName": "BasicQueue"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 67,
+          "y": 640
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789005",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789006"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "All our agents are currently busy. Press 1 to request a callback, or stay on the line to wait for the next available agent.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 320,
+          "y": 493
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789006",
+      "type": "GetUserInput",
+      "branches": [
+        {
+          "condition": "Pressed",
+          "conditionValue": "1",
+          "transition": "12345678-1234-1234-1234-123456789007"
+        },
+        {
+          "condition": "Timeout",
+          "transition": "12345678-1234-1234-1234-123456789004"
+        },
+        {
+          "condition": "NoMatch",
+          "transition": "12345678-1234-1234-1234-123456789004"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        },
+        {
+          "name": "Timeout",
+          "value": "5"
+        },
+        {
+          "name": "MaxDigits",
+          "value": "1"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 320,
+          "y": 640
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789007",
+      "type": "SetCallbackNumber",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789012"
+        },
+        {
+          "condition": "InvalidNumber",
+          "transition": "12345678-1234-1234-1234-123456789004"
+        },
+        {
+          "condition": "Error",
+          "transition": "12345678-1234-1234-1234-123456789004"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "CallbackNumber",
+          "value": "$.CustomerEndpoint.Address",
+          "namespace": null
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 573,
+          "y": 640
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789008",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789009"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "Thank you for calling. Our offices are currently closed. Press 1 to request a callback during business hours, or hang up to end the call.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 320,
+          "y": 346
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789009",
+      "type": "GetUserInput",
+      "branches": [
+        {
+          "condition": "Pressed",
+          "conditionValue": "1",
+          "transition": "12345678-1234-1234-1234-123456789010"
+        },
+        {
+          "condition": "Timeout",
+          "transition": "12345678-1234-1234-1234-123456789011"
+        },
+        {
+          "condition": "NoMatch",
+          "transition": "12345678-1234-1234-1234-123456789011"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        },
+        {
+          "name": "Timeout",
+          "value": "5"
+        },
+        {
+          "name": "MaxDigits",
+          "value": "1"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 573,
+          "y": 346
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789010",
+      "type": "SetCallbackNumber",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789014"
+        },
+        {
+          "condition": "InvalidNumber",
+          "transition": "12345678-1234-1234-1234-123456789011"
+        },
+        {
+          "condition": "Error",
+          "transition": "12345678-1234-1234-1234-123456789011"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "CallbackNumber",
+          "value": "$.CustomerEndpoint.Address",
+          "namespace": null
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 826,
+          "y": 346
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789011",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789015"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "Thank you for calling. Goodbye.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 573,
+          "y": 493
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789012",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789015"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "Thank you. We will call you back as soon as an agent becomes available.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 826,
+          "y": 640
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789013",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789015"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "We're sorry, but we're unable to take your call at this time. Please try again later.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 67,
+          "y": 787
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789014",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "12345678-1234-1234-1234-123456789015"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "Thank you. We will call you back during our business hours.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 1079,
+          "y": 346
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-1234-1234-123456789015",
+      "type": "Disconnect",
+      "branches": [],
+      "parameters": [],
+      "metadata": {
+        "position": {
+          "x": 573,
+          "y": 934
+        }
+      }
+    }
+  ],
+  "version": "1",
+  "type": "contactFlow",
+  "start": "12345678-1234-1234-1234-123456789000",
+  "metadata": {
+    "entryPointPosition": {
+      "x": 67,
+      "y": 15
+    },
+    "snapToGrid": false,
+    "name": "IVR with Hours Check and Callback",
+    "description": "IVR flow that checks hours of operation and provides callback options for both in-hours (when no agents available) and out-of-hours scenarios",
+    "type": "contactFlow",
+    "status": "published",
+    "hash": {}
+  }
+}
